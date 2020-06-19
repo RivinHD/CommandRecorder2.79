@@ -154,6 +154,19 @@ def Move(Num , Mode) :
             CR_(CR_("Index",254),index1)
             CR_("List",254).clear()
 
+def Select_Command(Mode):
+    currentIndex = CR_("Index",0)
+    listlen = len(CR_("List",0)) - 1
+    if Mode == "Up":
+        if currentIndex == 0:
+            bpy.context.scene.CR_Var.List_Index_000 = listlen
+        else:
+            bpy.context.scene.CR_Var.List_Index_000 = currentIndex - 1
+    else:
+        if currentIndex == listlen:
+            bpy.context.scene.CR_Var.List_Index_000 = 0
+        else:
+            bpy.context.scene.CR_Var.List_Index_000 = currentIndex + 1
 
 def Play(Commands) :
     scene = bpy.context.scene
@@ -232,6 +245,23 @@ class CR_OT_Selector(Operator):
         bpy.context.area.tag_redraw()
         return{'FINISHED'}#UI系の関数の最後には必ず付ける
 
+class CR_OT_Selector_Up(Operator):
+    bl_idname = "cr_selector_up.button"
+    bl_label = "Command_OT_Selection_Up"
+    bl_options = {'REGISTER', 'UNDO'}
+    def execute(self, context):
+        Select_Command("Up")
+        bpy.context.area.tag_redraw()
+        return{'FINISHED'}
+
+class CR_OT_Selector_Down(Operator):
+    bl_idname = "cr_selector_down.button"
+    bl_label = "Command_OT_Selection_Down"
+    bl_options = {'REGISTER', 'UNDO'}
+    def execute(self, context):
+        Select_Command("Down")
+        bpy.context.area.tag_redraw()
+        return{'FINISHED'}
 
 class Command_OT_Play(Operator):
     bl_idname = "cr_commandplay.button"#大文字禁止
@@ -612,6 +642,8 @@ class CR_Prop(PropertyGroup):#何かとプロパティを収納
     [
     (Command_OT_Add.bl_idname, "COMMA", "PRESS", False, False, True),
     (Command_OT_Play.bl_idname, "PERIOD", "PRESS", False, False, True),
+    (CR_OT_Selector_Up.bl_idname, "WHEELUPMOUSE","PRESS", False, False, True),
+    (CR_OT_Selector_Down.bl_idname, "WHEELDOWNMOUSE","PRESS", False, False, True)
     ]
 
 
@@ -645,6 +677,8 @@ CR_OT_String,
 CR_Prop,
 CR_List_Selector,
 CR_OT_Selector,
+CR_OT_Selector_Up,
+CR_OT_Selector_Down,
 CR_List_Command,
 Command_OT_Play,
 Command_OT_Add,
