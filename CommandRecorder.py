@@ -288,7 +288,7 @@ class CR_OT_Command(Operator):
     bl_idname = "cr_command.button"#大文字禁止
     bl_label = "Button_Command"#メニューに登録される名前
     bl_options = {'REGISTER', 'UNDO'} # 処理の属性
-    Mode : bpy.props.StringProperty(default="")
+    Mode = bpy.props.StringProperty(default="")
     def execute(self, context):
         #録画を開始
         if self.Mode == "Record_Start" :
