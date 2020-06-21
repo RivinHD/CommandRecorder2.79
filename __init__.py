@@ -13,7 +13,7 @@ bl_info = {
 "name" : "CommandRecorder",# プラグイン名
 "author" : "BuuGraphic",# 作者
 "version": (2, 0, 2),# プラグインのバージョン
-"blender": (2, 80, 0),# プラグインが動作するBlenderのバージョン
+"blender": (2, 79, 0),# プラグインが動作するBlenderのバージョン
 "location" : "View 3D",# Blender内部でのプラグインの位置づけ
 "description" : "Thank you for using our services",# プラグインの説明
 "warning" : "",

@@ -608,23 +608,23 @@ def Num_Instance_Updater(self, context):
      return items
 
 class CR_Prop(PropertyGroup):#何かとプロパティを収納
-    Rename : StringProperty(
+    Rename = StringProperty(
     ) #CR_Var.name
 
     Instance_Name = []
     Instance_Command = []
 
-    Instance_Index : EnumProperty(
+    Instance_Index = EnumProperty(
     items = Num_Instance_Updater
     )
     #コマンド切り替え
-    Target_Switch : EnumProperty(
+    Target_Switch = EnumProperty(
     items = [
     ("Once" , "Once" , ""),
     ("Each" , "Each" , ""),
     ])
     #履歴の詳細
-    Recent_Switch : EnumProperty(
+    Recent_Switch = EnumProperty(
     items = [
     ("Standard" , "Standard" , ""),
     ("Extend" , "Extend" , ""),
@@ -632,8 +632,8 @@ class CR_Prop(PropertyGroup):#何かとプロパティを収納
     Temp_Command = []
     Temp_Num = 0
     for Num_Loop in range(256) :
-        exec("List_Index_{0:03d} : IntProperty(default = 0)".format(Num_Loop))
-        exec("List_Command_{0:03d} : CollectionProperty(type = CR_OT_String)".format(Num_Loop))
+        exec("List_Index_{0:03d} = IntProperty(default = 0)".format(Num_Loop))
+        exec("List_Command_{0:03d} = CollectionProperty(type = CR_OT_String)".format(Num_Loop))
 
     #==============================================================
     # (キーが押されたときに実行する bpy.types.Operator のbl_idname, キー, イベント, Ctrlキー, Altキー, Shiftキー)
