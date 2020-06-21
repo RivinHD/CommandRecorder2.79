@@ -30,7 +30,7 @@ from . import DefineCommon as Common
 #使用クラスの宣言
 #-------------------------------------------------------------------------------------------
 class CR_OT_String(PropertyGroup):#リストデータを保持するためのプロパティグループを作成
-    Command : StringProperty(
+    Command = StringProperty(
     default=""
     ) #CR_Var.name
 
@@ -228,7 +228,7 @@ class CR_OT_Selector(Operator):
     bl_idname = "cr_selector.button"#大文字禁止
     bl_label = "Button_Selector"#メニューに登録される名前
     bl_options = {'REGISTER', 'UNDO'} # 処理の属性
-    Mode : bpy.props.StringProperty(default="")
+    Mode = bpy.props.StringProperty(default="")
     def execute(self, context):
         #追加
         if self.Mode == "Add" :
@@ -422,7 +422,7 @@ class CR_OT_Instance(Operator):
     bl_idname = "cr_instance.button"#大文字禁止
     bl_label = "Button_Instance"#メニューに登録される名前
     bl_options = {'REGISTER', 'UNDO'} # 処理の属性
-    Mode : bpy.props.StringProperty(default="")
+    Mode = bpy.props.StringProperty(default="")
     def execute(self, context):
         #追加
         if self.Mode == "Add" :
