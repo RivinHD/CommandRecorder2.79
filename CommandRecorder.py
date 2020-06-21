@@ -29,7 +29,7 @@ from . import DefineCommon as Common
 #==============================================================
 #使用クラスの宣言
 #-------------------------------------------------------------------------------------------
-class CR_OT_String(PropertyGroup):#リストデータを保持するためのプロパティグループを作成
+class CR_List_String(PropertyGroup):#リストデータを保持するためのプロパティグループを作成
     Command = StringProperty(
     default=""
     ) #CR_Var.name
@@ -37,13 +37,13 @@ class CR_OT_String(PropertyGroup):#リストデータを保持するためのプ
 
 class CR_List_Selector(UIList):
     def draw_item(self, context, layout, data, item, icon, active_data,active_propname, index):
-        layout.label(text = item.name)
+        layout.label(item.name)
 class CR_List_Command(UIList):
     def draw_item(self, context, layout, data, item, icon, active_data,active_propname, index):
-        layout.label(text = item.name)
+        layout.label(item.name)
 class CR_List_Instance(UIList):
     def draw_item(self, context, layout, data, item, icon, active_data,active_propname, index):
-        layout.label(text = item.name)
+        layout.label(item.name)
 
 
 #-------------------------------------------------------------------------------------------
@@ -77,10 +77,10 @@ def Get_Recent(Return_Bool):#操作履歴にアクセス
 
 def Record(Num , Mode):
     if Mode == "Start" :
-        CR_PT_List.Bool_Record = 1
+        CR_List_UI.Bool_Record = 1
         CR_Prop.Temp_Num = len(Get_Recent("Reports_All"))
     else :
-        CR_PT_List.Bool_Record = 0
+        CR_List_UI.Bool_Record = 0
         for Num_Loop in range (CR_Prop.Temp_Num+1 , len(Get_Recent("Reports_All"))) :
             TempText = Get_Recent("Reports_All")[Num_Loop-1].body
             if TempText.count("bpy") :
@@ -224,7 +224,7 @@ def Clear(Num) :
     CR_("List",Num).clear()
 
 
-class CR_OT_Selector(Operator):
+class CR_Button_Selector(Operator):
     bl_idname = "cr_selector.button"#大文字禁止
     bl_label = "Button_Selector"#メニューに登録される名前
     bl_options = {'REGISTER', 'UNDO'} # 処理の属性
@@ -263,9 +263,9 @@ class CR_OT_Selector_Down(Operator):
         bpy.context.area.tag_redraw()
         return{'FINISHED'}
 
-class Command_OT_Play(Operator):
-    bl_idname = "cr_commandplay.button"#大文字禁止
-    bl_label = "Command_OT_Play"#メニューに登録される名前
+class Command_Play(Operator):
+    bl_idname = "commandplay.button"#大文字禁止
+    bl_label = "Command_Play"#メニューに登録される名前
     bl_options = {'REGISTER', 'UNDO'}#アンドゥ履歴に登録
     def execute(self, context):
         #コマンドを実行
@@ -274,9 +274,9 @@ class Command_OT_Play(Operator):
 
 
 
-class Command_OT_Add(Operator):
-    bl_idname = "cr_commandadd.button"#大文字禁止
-    bl_label = "Command_OT_Add"#メニューに登録される名前
+class Command_Add(Operator):
+    bl_idname = "commandadd.button"#大文字禁止
+    bl_label = "Command_Add"#メニューに登録される名前
     bl_options = {'REGISTER', 'UNDO'}#アンドゥ履歴に登録
     def execute(self, context):
         #コマンドを実行
@@ -284,7 +284,7 @@ class Command_OT_Add(Operator):
         bpy.context.area.tag_redraw()
         return{'FINISHED'}#UI系の関数の最後には必ず付ける
 
-class CR_OT_Command(Operator):
+class CR_Button_Command(Operator):
     bl_idname = "cr_command.button"#大文字禁止
     bl_label = "Button_Command"#メニューに登録される名前
     bl_options = {'REGISTER', 'UNDO'} # 処理の属性
@@ -417,8 +417,16 @@ def I_Move(Mode):
         scene.CR_Var.Instance_Index = str(index2)
 
 
+def I_PropertyUpdater() :
+    scene = bpy.context.scene
 
-class CR_OT_Instance(Operator):
+    #scene.CR_Var.Rename = CR_Prop.Instance_Name[int(scene.CR_Var.Instance_Index)]
+    #scene.CR_Var.List_Command_255.clear()
+    #for Command in CR_Prop.Instance_Command[int(scene.CR_Var.Instance_Index)] :
+    #    scene.CR_Var.List_Command_255.append(Command)
+
+
+class CR_Button_Instance(Operator):
     bl_idname = "cr_instance.button"#大文字禁止
     bl_label = "Button_Instance"#メニューに登録される名前
     bl_options = {'REGISTER', 'UNDO'} # 処理の属性
@@ -474,15 +482,15 @@ def Recent_Switch(Mode):
         bpy.app.debug_wm = 0
     else :
         bpy.app.debug_wm = 1
-    CR_PT_List.Bool_Recent = Mode
+    CR_List_UI.Bool_Recent = Mode
 
 
 #==============================================================
 #レイアウト
 #-------------------------------------------------------------------------------------------
 # メニュー
-class CR_PT_List(bpy.types.Panel):
-    bl_region_type = 'UI'# メニューを表示するリージョン
+class CR_List_UI(bpy.types.Panel):
+    bl_region_type = 'TOOLS'# メニューを表示するリージョン
     bl_category = "CommandRecorder"# メニュータブのヘッダー名
     bl_label = "CommandRecorder"# タイトル
     #変数の宣言
@@ -501,54 +509,54 @@ class CR_PT_List(bpy.types.Panel):
         layout = self.layout
         box = layout.box()
         box_row = box.row()
-        box_row.label(text = "", icon = "SETTINGS")
+        box_row.label(text = "", icon = "SCRIPTPLUGINS")
         if len(CR_("List",0)) :
-            box_row.prop(CR_("List",0)[CR_("Index",0)] , "name" , text="")
+            box_row.prop(CR_("List",0)[CR_("Index",0)] , "name" , "")
         box_row = box.row()
         col = box_row.column()
-        col.template_list("CR_List_Selector" , "" , scene.CR_Var , "List_Command_000" , scene.CR_Var , "List_Index_000", rows=4)
+        col.template_list("CR_List_Selector" , "" , scene.CR_Var , "List_Command_000" , scene.CR_Var , "List_Index_000")
         col = box_row.column()
-        col.operator(CR_OT_Selector.bl_idname , text="" , icon="ADD" ).Mode = "Add"
-        col.operator(CR_OT_Selector.bl_idname , text="" , icon="REMOVE" ).Mode = "Remove"
-        col.operator(CR_OT_Selector.bl_idname , text="" , icon="TRIA_UP" ).Mode = "Up"
-        col.operator(CR_OT_Selector.bl_idname , text="" , icon="TRIA_DOWN" ).Mode = "Down"
+        col.operator(CR_Button_Selector.bl_idname , text="" , icon="ZOOMIN" ).Mode = "Add"
+        col.operator(CR_Button_Selector.bl_idname , text="" , icon="ZOOMOUT" ).Mode = "Remove"
+        col.operator(CR_Button_Selector.bl_idname , text="" , icon="TRIA_UP" ).Mode = "Up"
+        col.operator(CR_Button_Selector.bl_idname , text="" , icon="TRIA_DOWN" ).Mode = "Down"
         #
         if len(CR_("List",0)) :
             box_row = box.row()
-            box_row.label(text = "", icon = "TEXT")
+            box_row.label(text = "", icon = "CONSOLE")
             if len(CR_("List",CR_("Index",0)+1)) :
-                box_row.prop(CR_("List",CR_("Index",0)+1)[CR_("Index",CR_("Index",0)+1)],"name" , text="")
+                box_row.prop(CR_("List",CR_("Index",0)+1)[CR_("Index",CR_("Index",0)+1)],"name" , "")
             box_row = box.row()
             col = box_row.column()
-            col.template_list("CR_List_Command" , "" , scene.CR_Var , "List_Command_{0:03d}".format(CR_("Index",0)+1) , scene.CR_Var , "List_Index_{0:03d}".format(CR_("Index",0)+1), rows=4)
+            col.template_list("CR_List_Command" , "" , scene.CR_Var , "List_Command_{0:03d}".format(CR_("Index",0)+1) , scene.CR_Var , "List_Index_{0:03d}".format(CR_("Index",0)+1))
             col = box_row.column()
-            if CR_PT_List.Bool_Record :
-                col.operator(CR_OT_Command.bl_idname , text="" , icon="PAUSE" ).Mode = "Record_Stop"
+            if CR_List_UI.Bool_Record :
+                col.operator(CR_Button_Command.bl_idname , text="" , icon="CANCEL" ).Mode = "Record_Stop"
             else :
-                col.operator(CR_OT_Command.bl_idname , text="" , icon="REC" ).Mode = "Record_Start"
-                col.operator(Command_OT_Add.bl_idname , text="" , icon="ADD" )
-                col.operator(CR_OT_Command.bl_idname , text="" , icon="REMOVE" ).Mode = "Remove"
-                col.operator(CR_OT_Command.bl_idname , text="" , icon="TRIA_UP" ).Mode = "Up"
-                col.operator(CR_OT_Command.bl_idname , text="" , icon="TRIA_DOWN" ).Mode = "Down"
+                col.operator(CR_Button_Command.bl_idname , text="" , icon="REC" ).Mode = "Record_Start"
+                col.operator(Command_Add.bl_idname , text="" , icon="ZOOMIN" )
+                col.operator(CR_Button_Command.bl_idname , text="" , icon="ZOOMOUT" ).Mode = "Remove"
+                col.operator(CR_Button_Command.bl_idname , text="" , icon="TRIA_UP" ).Mode = "Up"
+                col.operator(CR_Button_Command.bl_idname , text="" , icon="TRIA_DOWN" ).Mode = "Down"
             if len(CR_("List",CR_("Index",0)+1)) :
-                box.operator(Command_OT_Play.bl_idname , text="Play" )
-                box.operator(CR_OT_Instance.bl_idname , text="Recorder to Button" ).Mode = "Recorder_to_Instance"
-                box.operator(CR_OT_Command.bl_idname , text="Clear").Mode = "Clear"
+                box.operator(Command_Play.bl_idname , text="Play" )
+                box.operator(CR_Button_Instance.bl_idname , text="Recorder to Button" ).Mode = "Recorder_to_Instance"
+                box.operator(CR_Button_Command.bl_idname , text="Clear").Mode = "Clear"
         box = layout.box()
-        box.label(text = "Options", icon = "PRESET_NEW")
-        #box_row = box.row()
-        #box_row.label(text = "Target")
-        #box_row.prop(scene.CR_Var, "Target_Switch" ,expand = 1)
+        box.label(text = "Options", icon = "UI")
+        box_row = box.row()
+        box_row.label(text = "Target")
+        box_row.prop(scene.CR_Var, "Target_Switch" ,expand = 1)
         box_row = box.row()
         box_row.label(text = "History")
         box_row.prop(scene.CR_Var, "Recent_Switch" ,expand = 1)
-        if not(CR_PT_List.Bool_Recent == scene.CR_Var.Recent_Switch) :
+        if not(CR_List_UI.Bool_Recent == scene.CR_Var.Recent_Switch) :
             Recent_Switch(scene.CR_Var.Recent_Switch)
 
 
-class CR_PT_Instance(bpy.types.Panel):
+class CR_Instance_UI(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'# メニューを表示するエリア
-    bl_region_type = 'UI'# メニューを表示するリージョン
+    bl_region_type = 'TOOLS'# メニューを表示するリージョン
     bl_category = "CommandRecorder"# メニュータブのヘッダー名
     bl_label = "CommandButton"# タイトル
     #変数の宣言
@@ -558,46 +566,46 @@ class CR_PT_Instance(bpy.types.Panel):
     #レイアウト
     #-------------------------------------------------------------------------------------------
     def draw_header(self, context):
-        self.layout.label(text = "", icon = "PREFERENCES")
+        self.layout.label(text = "", icon = "SCRIPTWIN")
     #メニューの描画処理
     def draw(self, context):
-        if CR_PT_Instance.StartUp == 0:
+        if CR_Instance_UI.StartUp == 0:
             Load()
-            CR_PT_Instance.StartUp = 1
+            CR_Instance_UI.StartUp = 1
         scene = bpy.context.scene
         #-------------------------------------------------------------------------------------------
         layout = self.layout
         #
 
         box = layout.box()
-        box.operator(CR_OT_Instance.bl_idname , text="Button to Recorder" ).Mode = "Instance_to_Recorder"
-        box_split = box.split(factor=0.2)
+        box.operator(CR_Button_Instance.bl_idname , text="Button to Recorder" ).Mode = "Instance_to_Recorder"
+        box_split = box.split(percentage=0.2)
         box_col = box_split.column()
         box_col.prop(scene.CR_Var, "Instance_Index" ,expand = 1)
         box_col = box_split.column()
         box_col.scale_y = 0.9493
         for Num_Loop in range(len(CR_Prop.Instance_Name)) :
-            box_col.operator(CR_OT_Instance.bl_idname , text=CR_Prop.Instance_Name[Num_Loop]).Mode = CR_Prop.Instance_Name[Num_Loop]
+            box_col.operator(CR_Button_Instance.bl_idname , text=CR_Prop.Instance_Name[Num_Loop]).Mode = CR_Prop.Instance_Name[Num_Loop]
         if len(CR_Prop.Instance_Name) :
             box_row = box.row()
-            box_row.operator(CR_OT_Instance.bl_idname , text="" , icon="REMOVE" ).Mode = "I_Remove"
-            box_row.operator(CR_OT_Instance.bl_idname , text="" , icon="TRIA_UP" ).Mode = "I_Up"
-            box_row.operator(CR_OT_Instance.bl_idname , text="" , icon="TRIA_DOWN" ).Mode = "I_Down"
-            box_row.prop(scene.CR_Var , "Rename" , text="")
-            box_row.operator(CR_OT_Instance.bl_idname , text="Rename").Mode = "Rename"
+            box_row.operator(CR_Button_Instance.bl_idname , text="" , icon="ZOOMOUT" ).Mode = "I_Remove"
+            box_row.operator(CR_Button_Instance.bl_idname , text="" , icon="TRIA_UP" ).Mode = "I_Up"
+            box_row.operator(CR_Button_Instance.bl_idname , text="" , icon="TRIA_DOWN" ).Mode = "I_Down"
+            box_row.prop(scene.CR_Var , "Rename" , "")
+            box_row.operator(CR_Button_Instance.bl_idname , text="Rename").Mode = "Rename"
         box = layout.box()
-        box.operator(CR_OT_Instance.bl_idname , text="Save to File" ).Mode = "Save"
-        box.operator(CR_OT_Instance.bl_idname , text="Load from File" ).Mode = "Load"
+        box.operator(CR_Button_Instance.bl_idname , text="Save to File" ).Mode = "Save"
+        box.operator(CR_Button_Instance.bl_idname , text="Load from File" ).Mode = "Load"
 
 
 
-class CR_List_PT_VIEW_3D(CR_PT_List):
+class CR_List_UI_VIEW_3D(CR_List_UI):
     bl_space_type = 'VIEW_3D'# メニューを表示するエリア
-class CR_PT_Instance_VIEW_3D(CR_PT_Instance):
+class CR_Instance_UI_VIEW_3D(CR_Instance_UI):
     bl_space_type = 'VIEW_3D'# メニューを表示するエリア
-class CR_List_PT_IMAGE_EDITOR(CR_PT_List):
+class CR_List_UI_IMAGE_EDITOR(CR_List_UI):
     bl_space_type = 'IMAGE_EDITOR'
-class CR_PT_Instance_IMAGE_EDITOR(CR_PT_Instance):
+class CR_Instance_UI_IMAGE_EDITOR(CR_Instance_UI):
     bl_space_type = 'IMAGE_EDITOR'
 
 
@@ -633,15 +641,15 @@ class CR_Prop(PropertyGroup):#何かとプロパティを収納
     Temp_Num = 0
     for Num_Loop in range(256) :
         exec("List_Index_{0:03d} = IntProperty(default = 0)".format(Num_Loop))
-        exec("List_Command_{0:03d} = CollectionProperty(type = CR_OT_String)".format(Num_Loop))
+        exec("List_Command_{0:03d} = CollectionProperty(type = CR_List_String)".format(Num_Loop))
 
     #==============================================================
     # (キーが押されたときに実行する bpy.types.Operator のbl_idname, キー, イベント, Ctrlキー, Altキー, Shiftキー)
     addon_keymaps = []
     key_assign_list = \
     [
-    (Command_OT_Add.bl_idname, "COMMA", "PRESS", False, False, True),
-    (Command_OT_Play.bl_idname, "PERIOD", "PRESS", False, False, True),
+    (Command_Add.bl_idname, "COMMA", "PRESS", False, False, True),
+    (Command_Play.bl_idname, "PERIOD", "PRESS", False, False, True),
     (CR_OT_Selector_Up.bl_idname, "WHEELUPMOUSE","PRESS", False, False, True),
     (CR_OT_Selector_Down.bl_idname, "WHEELDOWNMOUSE","PRESS", False, False, True)
     ]
@@ -673,20 +681,18 @@ def Clear_Props():
 #使用されているクラスを格納
 Class_List = \
 [
-CR_OT_String,
+CR_List_String,
 CR_Prop,
 CR_List_Selector,
-CR_OT_Selector,
-CR_OT_Selector_Up,
-CR_OT_Selector_Down,
+CR_Button_Selector,
 CR_List_Command,
-Command_OT_Play,
-Command_OT_Add,
-CR_OT_Command,
+Command_Play,
+Command_Add,
+CR_Button_Command,
 CR_List_Instance,
-CR_OT_Instance,
-CR_List_PT_VIEW_3D,
-CR_PT_Instance_VIEW_3D,
-CR_List_PT_IMAGE_EDITOR,
-CR_PT_Instance_IMAGE_EDITOR,
+CR_Button_Instance,
+CR_List_UI_VIEW_3D,
+CR_Instance_UI_VIEW_3D,
+CR_List_UI_IMAGE_EDITOR,
+CR_Instance_UI_IMAGE_EDITOR,
 ]

@@ -63,6 +63,7 @@ def unregister():
     for Temp in Class_List:
         bpy.utils.unregister_class(Temp)
     CommandRecorder.Clear_Props()
+    bpy.utils.unregister_module(__name__)#最後に解除
     print("UnRegister")
 
 
