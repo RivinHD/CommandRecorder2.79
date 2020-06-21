@@ -650,8 +650,8 @@ class CR_Prop(PropertyGroup):#何かとプロパティを収納
     [
     (Command_Add.bl_idname, "COMMA", "PRESS", False, False, True),
     (Command_Play.bl_idname, "PERIOD", "PRESS", False, False, True),
-    (CR_OT_Selector_Up.bl_idname, "WHEELUPMOUSE","PRESS", False, False, True),
-    (CR_OT_Selector_Down.bl_idname, "WHEELDOWNMOUSE","PRESS", False, False, True)
+    (CR_OT_Selector_Up.bl_idname, "WHEELUPMOUSE","PRESS", True, True, True),
+    (CR_OT_Selector_Down.bl_idname, "WHEELDOWNMOUSE","PRESS", True, True, True)
     ]
 
 
