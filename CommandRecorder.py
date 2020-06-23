@@ -81,7 +81,7 @@ def Record(Num , Mode):
         CR_Prop.Temp_Num = len(Get_Recent("Reports_All"))
     else :
         CR_List_UI.Bool_Record = 0
-        for Num_Loop in range (CR_Prop.Temp_Num+1 , len(Get_Recent("Reports_All"))) :
+        for Num_Loop in range (CR_Prop.Temp_Num , len(Get_Recent("Reports_All"))) :
             TempText = Get_Recent("Reports_All")[Num_Loop-1].body
             if TempText.count("bpy") :
                 Item = CR_("List",Num).add()
@@ -92,11 +92,12 @@ def Add(Num) :
     if Num or len(CR_("List",0)) < 250 :
         Item = CR_("List",Num).add()
         if Num :
-            if Get_Recent("Reports_All")[-2].body.count("bpy"):
-                Name_Temp = Get_Recent("Reports_All")[-2].body
+            Recent = Get_Recent("Reports_All")
+            if Recent[-2].body.count("bpy"):
+                Name_Temp = Recent[-2].body
                 Item.name = Name_Temp[Name_Temp.find("bpy"):]
             else :
-                Name_Temp = Get_Recent("Reports_All")[-3].body
+                Name_Temp = Recent[-3].body
                 Item.name = Name_Temp[Name_Temp.find("bpy."):]
         else :
             Item.name = "Untitled_{0:03d}".format(len(CR_("List",Num)))
@@ -227,7 +228,7 @@ def Clear(Num) :
 class CR_Button_Selector(Operator):
     bl_idname = "cr_selector.button"#大文字禁止
     bl_label = "Button_Selector"#メニューに登録される名前
-    bl_options = {'REGISTER', 'UNDO'} # 処理の属性
+    #bl_options = {'REGISTER', 'UNDO'} # 処理の属性
     Mode = bpy.props.StringProperty(default="")
     def execute(self, context):
         #追加
@@ -248,7 +249,7 @@ class CR_Button_Selector(Operator):
 class CR_OT_Selector_Up(Operator):
     bl_idname = "cr_selector_up.button"
     bl_label = "Command_OT_Selection_Up"
-    bl_options = {'REGISTER', 'UNDO'}
+    #bl_options = {'REGISTER', 'UNDO'}
     def execute(self, context):
         Select_Command("Up")
         bpy.context.area.tag_redraw()
@@ -257,7 +258,7 @@ class CR_OT_Selector_Up(Operator):
 class CR_OT_Selector_Down(Operator):
     bl_idname = "cr_selector_down.button"
     bl_label = "Command_OT_Selection_Down"
-    bl_options = {'REGISTER', 'UNDO'}
+    #bl_options = {'REGISTER', 'UNDO'}
     def execute(self, context):
         Select_Command("Down")
         bpy.context.area.tag_redraw()
@@ -277,7 +278,7 @@ class Command_Play(Operator):
 class Command_Add(Operator):
     bl_idname = "commandadd.button"#大文字禁止
     bl_label = "Command_Add"#メニューに登録される名前
-    bl_options = {'REGISTER', 'UNDO'}#アンドゥ履歴に登録
+    #bl_options = {'REGISTER', 'UNDO'}#アンドゥ履歴に登録
     def execute(self, context):
         #コマンドを実行
         Add(CR_("Index",0)+1)
@@ -287,7 +288,7 @@ class Command_Add(Operator):
 class CR_Button_Command(Operator):
     bl_idname = "cr_command.button"#大文字禁止
     bl_label = "Button_Command"#メニューに登録される名前
-    bl_options = {'REGISTER', 'UNDO'} # 処理の属性
+    #bl_options = {'REGISTER', 'UNDO'} # 処理の属性
     Mode = bpy.props.StringProperty(default="")
     def execute(self, context):
         #録画を開始
@@ -429,7 +430,7 @@ def I_PropertyUpdater() :
 class CR_Button_Instance(Operator):
     bl_idname = "cr_instance.button"#大文字禁止
     bl_label = "Button_Instance"#メニューに登録される名前
-    bl_options = {'REGISTER', 'UNDO'} # 処理の属性
+    #bl_options = {'REGISTER', 'UNDO'} # 処理の属性
     Mode = bpy.props.StringProperty(default="")
     def execute(self, context):
         #追加
