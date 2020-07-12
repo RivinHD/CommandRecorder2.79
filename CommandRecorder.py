@@ -316,14 +316,8 @@ class CR_Button_Command(Operator):
         bpy.context.area.tag_redraw()
         return{'FINISHED'}#UI系の関数の最後には必ず付ける
 
-
-
-
 def StrageFile() :
-    Name_File = "CommandRecorder_Storage.txt"
-    AddonDirector = os.path.dirname(os.path.abspath(__file__))#アドオン管理システムの絶対パスを取得
-    File_Path = os.path.normpath(os.path.join(AddonDirector, '../CommandRecorder/Storage/' + Name_File))
-    return File_Path
+    return os.path.dirname(__file__) + "/Storage/" + "CommandRecorder_Storage.txt"
 
 def Save():
     scene = bpy.context.scene
